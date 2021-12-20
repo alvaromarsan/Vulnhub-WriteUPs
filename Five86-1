@@ -1,0 +1,11 @@
+Walkthrough Maquina Five86-1
+----------------------------
+1. Lo primero que debemos hacer es descubrir cual es la IP de la máquina víctima, para ello utilizamos la herramienta:
+ - netdiscover.
+2. Lo siguiente es lanzar un escaneo de puertos con nmap:
+ - nmap -sS -Pn IP_victima.
+3. Una vez sabemos que puertos están abiertos, lanzamos un escaneo más exhaustivo para obtener más información de los servicios:
+ - nmap -sCV -p Ports IP_victima
+4. Vemos que tiene abierto el puerto 80 por lo tanto tiene un servidor web, lo primero que hacemos es obtener información con whatweb:
+ - whatweb http://IP_victima
+5. Ahora abrimos el navegador ir accedemos al sitio web de la víctima.
