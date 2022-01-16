@@ -1,0 +1,26 @@
+WriteUP Máquina Stapler
+-----------------------
+
+1. Lo primero que debemos hacer es descubrir cual es la IP de la máquina víctima, para ello utilizamos la herramienta:
+ - netdiscover.
+2. Lo siguiente es lanzar un escaneo de puertos con nmap:
+ - nmap -p- --open -T5 -v -n IP_victima -oG allPorts.
+3. Una vez sabemos que puertos están abiertos, lanzamos un escaneo más exhaustivo para obtener más información de los servicios:
+ - nmap -sCV -p Ports IP_victima -oN targeted
+4. Enumeramos los archivos que hay en FTP.
+ - ftp IP_victima
+5. Enumeración SMB.
+ - smbclient -L IP_victima 
+6. Enumeración DNS.
+ - Ponemos como servidor DNS de nuestra máquina la IP de la máquina víctima.
+ - nslookup IP_víctima.
+ - dig -x IP_víctima.
+7. Enumerando DOOM.
+ - Vamos a extraer toda la información que hay en el puerto 666, utilizando nc IP_víctima 666 > doom.
+ - Con file doom vemos que es un fichero ZIP, lo descomprimimos con unzip doom.
+8. Enumerando HTTP.
+ - Con nikto -h IP_víctima:12380 averiguamos que en el archivo robots.txt se esconden dos directorios: /admin112233/, /blogblog/.
+ - Abrimos /blogblog/ y vemos que es un wordpress.
+ - Con wpscan enumeramos los usuarios, para ello utilizamos el comando: wpscan --url https://IP_víctima:12380/blogblog/ --enumerate u --disable-tls-checks.
+ - Ahora vamos a proceder a intentar lograr autenticarnos usando un diccionario, para ello usamos el siguiente comando:
+   - wpscan --url https://IP_víctima:12380/blogblog/ -P diccionario -o wordpress -t 50 --disable-tls-checks.
